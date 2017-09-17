@@ -6,6 +6,7 @@ SWAT是我们学习水文模型的很好范例，它的源码由Fortran编写，
 - 3、[c中实现fortran接口](#3--c中实现fortran接口)
 
 >主要参考资料
+
 1、http://www.neurophys.wisc.edu/comp/docs/notes/not017.html
 2、http://micro.ustc.edu.cn/Fortran/
 3、http://arnholm.org/software/cppf77/cppf77.htm
@@ -106,9 +107,13 @@ SUBROUTINE TEST1(a,b)
 
 ```
 3、右键FirstFortranDLL，生成（Build），不出意外的话，在Debug文件夹下就会发现如下三个文件（只复制DLL和LIB也可），复制到C++工程的Debug，并通过右键-添加现有项将LIB添加至工程：
+
 ![](https://github.com/qualitydog/pic/blob/master/pic/fig2.png)
+
 用Dependency Walker打开DLL，可以看到我们定义的函数名等信息，发现均为小写：
+
 ![](https://github.com/qualitydog/pic/blob/master/pic/fig3.png)
+
 OK，以上3 步便是将Fortran源码编译成了可供C++调用的库，接下来要新建一个C++控制台项目，空项目即可：
 4、新建C++文件，输入以下代码：
 ```
@@ -149,11 +154,15 @@ OK，以上3 步便是将Fortran源码编译成了可供C++调用的库，接下
 ```
 5、这时候点编译运行会出现一系列的错误，比如：
 error LNK1104: 无法打开文件“ifconsol.lib”
+
 ![](https://github.com/qualitydog/pic/blob/master/pic/fig4.png)
 ![](https://github.com/qualitydog/pic/blob/master/pic/fig5.png)
+
 这些错误的出现一般是没有正确引用库造成的，因此，在项目属性下找到VC++目录，点开库目录，添加以下东西：
 software.intel.com/en-us/articles/configuring-visual-studio-for-mixed-language-applications/
+
 ![](https://github.com/qualitydog/pic/blob/master/pic/fig6.png)
+
 此外，还有一种错误是因为编译器找不到这个函数名，为什么找不到，这里需要补一下C/C++/Fortran的命名规范还有Name Mangling了，这篇博文写的很好(http://blog.csdn.net/hanyujianke/article/details/8622041)。
 比如我现在的错误是：
 
