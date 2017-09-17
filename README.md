@@ -1,10 +1,9 @@
 # C++/Fortran Mixed Programming with VS2010 and IVF2013
 SWAT是我们学习水文模型的很好范例，它的源码由Fortran编写，且在持续更新中，最新版本为2014年9月30日更新的[SWAT2012 rev.629](http://swat.tamu.edu/software/swat-executables/)。为了更好地研究、利用这个宝库，我们需要一些Fortran基本知识，保证能看懂源码，并学会如何实现C++调用Fortran动态链接库（DLL），达到为我所用的目的。
 ## 目录
-- 1、[Fortran基本语法](#1--Fortran基本语法)
+- 1、[Fortran基本语法](#1--fortran基本语法)
 - 2、[在VS2010和IVF2013环境下实现混合编程](#2--在VS2010和IVF2013环境下实现混合编程)
-- 3、[SWAT源码结构分析](#2--在vs2010和ivf2013环境下实现混合编程)
-- 4、[SWAT源码编译DLL流程](#4--#)
+- 3、[c中实现fortran接口](#3--c中实现fortran接口)
 
 >主要参考资料
 1、http://www.neurophys.wisc.edu/comp/docs/notes/not017.html
@@ -26,7 +25,7 @@ Fortran基本数据类型有：
 数组：
 * Fortran最高支持7维数组，数据始终保存在一段连续的内存中，并有标准的组织顺序。一维数组的存储和C++是一致的，因此对一维数组，可以直接相互传递。二维或更高维数组Fortran采用的“列优先”存储方式，这和C++“行优先”方式相反。
 
-[返回目录](#0--目录)
+[返回目录](#目录)
 
 ## 2  在VS2010和IVF2013环境下实现混合编程
 编程环境：C++使用Visual Studio 2010，Fortran使用Intel Visual Fortran Composer XE 2013 SP1. （IVF2011以上版本均可）
