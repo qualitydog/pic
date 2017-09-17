@@ -1,10 +1,10 @@
 # C++/Fortran Mixed Programming with VS2010 and IVF2013
 SWAT是我们学习水文模型的很好范例，它的源码由Fortran编写，且在持续更新中，最新版本为2014年9月30日更新的[SWAT2012 rev.629](http://swat.tamu.edu/software/swat-executables/)。为了更好地研究、利用这个宝库，我们需要一些Fortran基本知识，保证能看懂源码，并学会如何实现C++调用Fortran动态链接库（DLL），达到为我所用的目的。
 ## 目录
-- 1、[Fortran基本语法](#1  Fortran基本语法)
-- 2、[在VS2010和IVF2013环境下实现混合编程](#2在VS2010和IVF2013环境下实现混合编程)
-- 3、[SWAT源码结构分析](#3--c中实现fortran接口)
-- 4、[SWAT源码编译DLL流程](#4 )
+- 1、[Fortran基本语法](#1--Fortran基本语法)
+- 2、[在VS2010和IVF2013环境下实现混合编程](#2--在VS2010和IVF2013环境下实现混合编程)
+- 3、[SWAT源码结构分析](#2--在vs2010和ivf2013环境下实现混合编程)
+- 4、[SWAT源码编译DLL流程](#4--#)
 
 >主要参考资料
 1、http://www.neurophys.wisc.edu/comp/docs/notes/not017.html
@@ -25,6 +25,8 @@ Fortran基本数据类型有：
 
 数组：
 * Fortran最高支持7维数组，数据始终保存在一段连续的内存中，并有标准的组织顺序。一维数组的存储和C++是一致的，因此对一维数组，可以直接相互传递。二维或更高维数组Fortran采用的“列优先”存储方式，这和C++“行优先”方式相反。
+
+[返回目录](#0--目录)
 
 ## 2  在VS2010和IVF2013环境下实现混合编程
 编程环境：C++使用Visual Studio 2010，Fortran使用Intel Visual Fortran Composer XE 2013 SP1. （IVF2011以上版本均可）
@@ -155,10 +157,15 @@ software.intel.com/en-us/articles/configuring-visual-studio-for-mixed-language-a
 ![](https://github.com/qualitydog/pic/blob/master/pic/fig6.png)
 此外，还有一种错误是因为编译器找不到这个函数名，为什么找不到，这里需要补一下C/C++/Fortran的命名规范还有Name Mangling了，这篇博文写的很好(http://blog.csdn.net/hanyujianke/article/details/8622041)。
 比如我现在的错误是：
+
 ![](https://github.com/qualitydog/pic/blob/master/pic/fig7.png)
+
 而在Dependency Walker中查看DLL：
+
 ![](https://github.com/qualitydog/pic/blob/master/pic/fig8.png)
+
 利用VS命令提示（2010），cd到LIB文件夹下，用dumpbin –exports *.lib命令查看：
+
 ![](https://github.com/qualitydog/pic/blob/master/pic/fig9.jpg)
 
 发现DLL和LIB中均是“_sub1ar@4”而C++调用的时候提示无法解析“_sub1ar@8”，看来还是Fortran预编译语句出了问题！
@@ -178,7 +185,9 @@ software.intel.com/en-us/articles/configuring-visual-studio-for-mixed-language-a
 !DIR$ ATTRIBUTES STDCALL,REFERENCE,DLLEXPORT :: SUBONE
 便可成功运行！切记！
 6、编译运行，可得结果：
+
 ![](https://github.com/qualitydog/pic/blob/master/pic/fig10.png)
+
 由结果我们可以看到，当参数传递是值传递时，结果是正确的，而引用传递则出现错误。原因在于Fortran代码中需要加上一句：
 !DIR$ ATTRIBUTES REFERENCE :: VARIABLES  !让编译器知道，此参数为引用传递，加上之后即为正确结果
 
@@ -407,11 +416,18 @@ typedef int     LOGICAL;             // LOGICAL              4 bytes
 
 ### 3.4 C++中调用Fortran需要的类
 根据Fortran中字符串、COMPLEX、数组等的特性，编写了一些类，便于C++调用。主要有CHARACTER、COMPLEX、FMATRIX、FOSTREAM，分别用于操作字符串、实数虚数、数组、文件输出。
+
 ![](https://github.com/qualitydog/pic/blob/master/pic/fig11.png)
+
 ### 3.5 混合编程流程
 有了以上的知识储备和简单训练之后，便可以着手C++/Fortran混合编程啦。基本流程可以归纳如下：
 1、在IVF下，新建动态链接库工程，添加Fortran源码，分析源码子过程SUBROUTINE和FUNCTION，添加合适的预编译语句，并编译生成DLL和LIB文件；
+
 2、新建C++工程，设置VC++目录下的库目录以包含IVF和其他依赖库；
+
 3、将Fortran编译生成的LIB文件添加至工程，把DLL、LIB文件复制进C++工程的Debug文件夹下；
+
 4、添加FORTRAN.h、FCHAR.h、FCMPLX.h、FMATRIX.h等头文件，并编写Fortran函数的头文件；
+
 5、开始C++ Coding吧。。。
+
