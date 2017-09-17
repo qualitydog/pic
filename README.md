@@ -8,7 +8,6 @@ SWAT是我们学习水文模型的很好范例，它的源码由Fortran编写，
 >主要参考资料
 
 >1、http://www.neurophys.wisc.edu/comp/docs/notes/not017.html
-
 >2、http://micro.ustc.edu.cn/Fortran/
 >3、http://arnholm.org/software/cppf77/cppf77.htm
 （The main idea of interfacing C++ and FORTRAN presented in this document is based on the SUBROUTINE and FUNCTION language elements of F77. Other language elements, like common blocks, are not viewed as suitable for interfacing directly within C++.）
@@ -105,7 +104,6 @@ SUBROUTINE TEST1(a,b)
            WRITE(*,*) "a / b = ",divided
            RETURN
        END
-
 ```
 3、右键FirstFortranDLL，生成（Build），不出意外的话，在Debug文件夹下就会发现如下三个文件（只复制DLL和LIB也可），复制到C++工程的Debug，并通过右键-添加现有项将LIB添加至工程：
 
@@ -151,7 +149,6 @@ OK，以上3 步便是将Fortran源码编译成了可供C++调用的库，接下
  	system("pause");
  	return 0;
  }
-
 ```
 5、这时候点编译运行会出现一系列的错误，比如：
 error LNK1104: 无法打开文件“ifconsol.lib”
@@ -203,7 +200,6 @@ software.intel.com/en-us/articles/configuring-visual-studio-for-mixed-language-a
 ```
 extern "C"{int _cdecl multiply(int ,int );}  //值传递
 extern "C"{int _stdcall multiply2(int& ,int& );}//引用传递
-
 ```
 
 ### 2.2 一些错误的解决方案
