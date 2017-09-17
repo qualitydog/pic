@@ -7,12 +7,13 @@ SWAT是我们学习水文模型的很好范例，它的源码由Fortran编写，
 
 >主要参考资料
 
-1、http://www.neurophys.wisc.edu/comp/docs/notes/not017.html
-2、http://micro.ustc.edu.cn/Fortran/
-3、http://arnholm.org/software/cppf77/cppf77.htm
+>1、http://www.neurophys.wisc.edu/comp/docs/notes/not017.html
+
+>2、http://micro.ustc.edu.cn/Fortran/
+>3、http://arnholm.org/software/cppf77/cppf77.htm
 （The main idea of interfacing C++ and FORTRAN presented in this document is based on the SUBROUTINE and FUNCTION language elements of F77. Other language elements, like common blocks, are not viewed as suitable for interfacing directly within C++.）
-4、https://sukhbinder.wordpress.com/2011/04/14/how-to-create-fortran-dll-in-visual-studio-with-intel-fortran-compiler/
-5、http://www.duote.com/tech/6/15005.html
+>4、https://sukhbinder.wordpress.com/2011/04/14/how-to-create-fortran-dll-in-visual-studio-with-intel-fortran-compiler/
+>5、http://www.duote.com/tech/6/15005.html
 
 ## 1  Fortran基本语法
 Fortran基本数据类型有：
@@ -396,6 +397,7 @@ CALL MESSAG(char1, i1, char2,i2)
 在FORTRAN中，文件的写入是由write语句完成的，而每一个write语句可一次性写入多个数据，构成一个数据块。而每一个无格式数据块都由下面3部分组成如图1所示：(1)数据块的开始标志，记录所有数据所占的字节数；(2)组成该数据块的各数据内容。整型数和浮点数，均占4个字节，低字节在前，高字节在后。各数据之间不空格。(3)每个数据块的结束标志，也为该数据块的字节数，而不是以回车换行符作为结束标志。各记录之间也没有分隔符。
  
 除此之外，由于编程语言的差异，不同的编译器存储的格式也存在差异，如Visual　FORTRAN与Digital FORTRAN在存储数据块中还存在着差别。差别在于在一个write语句中，Visual Fortran存储数据块的开始与结束标志是用一个字节表示，而在Digital Fortran在是用一个整形数，即四个字节来表示。如图2即Visual Fortran一个数据块最多可以存储2^7(128个字节)，如果一个write语句要求写入的数据量大于128字节时，则按|80|..DATA..|80|80|…DATA…| 80|循环存入。所以在读取时，可以把它转化为Digital FORTRAN的存储形式。
+
 [返回目录](#目录)
 
 ## 3  C++中实现Fortran接口
